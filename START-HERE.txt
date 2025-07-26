@@ -1,0 +1,15 @@
+========================================
+  START HERE (Windows)
+========================================
+
+1. Install Python 3.11+ (check "Add python.exe to PATH")
+
+2. Double-click setup.bat
+   - Say YES to paper trading
+   - Wallet / private key optional
+
+3. Double-click scripts\run-paper.bat
+
+Do NOT turn on LIVE_TRADING until you understand paper mode.
+Never share your private key with anyone.
+========================================
