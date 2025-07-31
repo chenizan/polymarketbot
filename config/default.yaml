@@ -1,0 +1,31 @@
+# Polymarket bot defaults, ALL live crypto 5-minute Up/Down windows
+
+loop_interval_sec: 2.0
+max_markets: 64
+# 5m windows roll fast, refresh often
+market_refresh_sec: 15.0
+
+market_filters:
+  min_liquidity: 100
+  min_volume_24h: 0
+  active_only: true
+  closed: false
+  tags: []
+  query: null
+  queries: []
+  keywords: []
+  token_ids: []
+  condition_ids: []
+  # Slug pattern: {asset}-updown-5m-{unix_ts}
+  updown_enabled: true
+  updown_assets:
+    - btc
+    - eth
+    - sol
+    - xrp
+    - doge
+    - bnb
+  updown_windows:
+    - 5m
+  # current + next window (future books often aren't live yet)
+  updown_past: 0
