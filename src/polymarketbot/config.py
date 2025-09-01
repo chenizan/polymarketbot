@@ -94,3 +94,100 @@ class Settings(BaseSettings):
     )
 
     private_key: str = ""
+    signature_type: int = 0
+    funder_address: str = ""
+
+    clob_api_key: str = ""
+    clob_api_secret: str = ""
+    clob_api_passphrase: str = ""
+
+    live_trading: bool = False
+    kill_switch: bool = False
+
+    clob_host: str = "https://clob.polymarket.com"
+    chain_id: int = 137
+    gamma_host: str = "https://gamma-api.polymarket.com"
+    data_api_host: str = "https://data-api.polymarket.com"
+    ws_market_url: str = "wss://ws-subscriptions-clob.polymarket.com/ws/market"
+    ws_user_url: str = "wss://ws-subscriptions-clob.polymarket.com/ws/user"
+
+    telegram_bot_token: str = ""
+    telegram_chat_id: str = ""
+
+    config_path: str = "config/default.yaml"
+    db_path: str = "data/bot.db"
+    log_dir: str = "logs"
+    kill_switch_file: str = "data/KILL"
+
+    max_order_size: float | None = None
+    max_position_per_market: float | None = None
+    max_total_exposure: float | None = None
+    max_daily_loss: float | None = None
+
+    paper_starting_cash: float = 10_000.0
+
+class AppConfig(BaseModel):
+    settings: Settings
+    yaml: YamlConfig
+
+    @property
+    def paper(self) -> bool:
+        return not self.settings.live_trading
+
+    @property
+    def risk(self) -> RiskConfig:
+        r = self.yaml.risk.model_copy(deep=True)
+        s = self.settings
+        if s.max_order_size is not None:
+            r.max_order_size = s.max_order_size
+        if s.max_position_per_market is not None:
+            r.max_position_per_market = s.max_position_per_market
+        if s.max_total_exposure is not None:
+            r.max_total_exposure = s.max_total_exposure
+        if s.max_daily_loss is not None:
+            r.max_daily_loss = s.max_daily_loss
+        return r
+
+    def enabled_strategies(self, override: list[str] | None = None) -> list[str]:
+        if override:
+            return override
+        sc = self.yaml.strategies
+        return ["binary_arb"] if sc.binary_arb.enabled else []
+
+def _load_yaml(path: Path) -> dict[str, Any]:
+    if not path.exists():
+        return {}
+    with path.open(encoding="utf-8") as f:
+        data = yaml.safe_load(f) or {}
+    if not isinstance(data, dict):
+        raise ValueError(f"Config YAML must be a mapping: {path}")
+    return data
+def load_config(
+    config_path: str | Path | None = None,
+    env_file: str | Path | None = None,
+) -> AppConfig:
+    """Load settings from env and strategy/risk defaults from YAML."""
+    kwargs: dict[str, Any] = {}
+    if env_file:
+        kwargs["_env_file"] = str(env_file)
+    settings = Settings(**kwargs) if kwargs else Settings()
+
+    path = Path(config_path or settings.config_path)
+    if not path.is_absolute():
+        # Prefer CWD, then repo root
+        if not path.exists():
+            alt = ROOT / path
+            if alt.exists():
+                path = alt
+    yaml_cfg = YamlConfig.model_validate(_load_yaml(path))
+    return AppConfig(settings=settings, yaml=yaml_cfg)
+
+def resolve_path(path: str | Path) -> Path:
+    p = Path(path)
+    if p.is_absolute():
+        return p
+    cwd = Path.cwd() / p
+    if cwd.exists() or os.getenv("POLYMARKETBOT_FORCE_CWD"):
+        return cwd
+    return ROOT / p
+
