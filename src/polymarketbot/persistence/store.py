@@ -219,3 +219,4 @@ class Store:
             "SELECT * FROM pnl_snapshots ORDER BY id DESC LIMIT 1"
         ).fetchone()
         return dict(row) if row else None
+
