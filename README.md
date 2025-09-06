@@ -8,3 +8,13 @@ Paper/live Polymarket CLOB bot (crypto 5m Up/Down binary arb).
 2. `scripts\run-paper.bat`
 
 ## Commands
+
+```
+polymarketbot setup
+polymarketbot run
+polymarketbot markets
+polymarketbot status
+polymarketbot cancel-all
+```
+
+MIT. not financial advice.
