@@ -85,3 +85,91 @@ class Market(BaseModel):
     accepting_orders: bool | None = None
     liquidity: float = 0.0
     volume_24h: float = 0.0
+    tags: list[str] = Field(default_factory=list)
+    raw: dict[str, Any] = Field(default_factory=dict)
+
+
+class MarketState(BaseModel):
+    market: Market
+    yes_book: OrderBook | None = None
+    no_book: OrderBook | None = None
+    yes_mid_history: list[float] = Field(default_factory=list)
+    no_mid_history: list[float] = Field(default_factory=list)
+    last_trade_price_yes: float | None = None
+    last_trade_price_no: float | None = None
+    updated_at: datetime = Field(default_factory=utcnow)
+
+
+class Signal(BaseModel):
+    id: str = Field(default_factory=new_id)
+    strategy: str
+    market_condition_id: str
+    token_id: str
+    side: Side
+    price: float
+    size: float
+    confidence: float = 1.0
+    reason: str = ""
+    order_type: OrderType = OrderType.GTC
+    tick_size: str = "0.01"
+    neg_risk: bool = False
+    created_at: datetime = Field(default_factory=utcnow)
+
+
+class Order(BaseModel):
+    id: str = Field(default_factory=new_id)
+    client_order_id: str = Field(default_factory=new_id)
+    exchange_order_id: str | None = None
+    signal_id: str | None = None
+    strategy: str = ""
+    market_condition_id: str = ""
+    token_id: str
+    side: Side
+    price: float
+    size: float
+    filled_size: float = 0.0
+    status: OrderStatus = OrderStatus.PENDING
+    order_type: OrderType = OrderType.GTC
+    paper: bool = True
+    created_at: datetime = Field(default_factory=utcnow)
+    updated_at: datetime = Field(default_factory=utcnow)
+    raw: dict[str, Any] = Field(default_factory=dict)
+
+
+class Fill(BaseModel):
+    id: str = Field(default_factory=new_id)
+    order_id: str
+    token_id: str
+    side: Side
+    price: float
+    size: float
+    fee: float = 0.0
+    paper: bool = True
+    strategy: str = ""
+    market_condition_id: str = ""
+    created_at: datetime = Field(default_factory=utcnow)
+
+
+class Position(BaseModel):
+    token_id: str
+    market_condition_id: str = ""
+    size: float = 0.0
+    avg_price: float = 0.0
+    realized_pnl: float = 0.0
+
+    @property
+    def notional(self) -> float:
+        return abs(self.size) * self.avg_price
+
+
+class PortfolioSnapshot(BaseModel):
+    cash: float = 0.0
+    equity: float = 0.0
+    unrealized_pnl: float = 0.0
+    realized_pnl: float = 0.0
+    daily_pnl: float = 0.0
+    peak_equity: float = 0.0
+    exposure: float = 0.0
+    open_markets: int = 0
+    positions: dict[str, Position] = Field(default_factory=dict)
+    updated_at: datetime = Field(default_factory=utcnow)
