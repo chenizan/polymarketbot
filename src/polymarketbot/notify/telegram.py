@@ -39,4 +39,3 @@ class TelegramNotifier:
                 client.post(url, json={"chat_id": self.chat_id, "text": text[:4000]})
         except Exception as exc:  # noqa: BLE001
             logger.warning("Telegram error: %s", exc)
-
