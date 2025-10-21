@@ -29,3 +29,34 @@ market_filters:
     - 5m
   # current + next window (future books often aren't live yet)
   updown_past: 0
+  updown_future: 1
+
+risk:
+  max_order_size: 50.0
+  max_position_per_market: 200.0
+  max_open_markets: 30
+  max_total_exposure: 1000.0
+  max_daily_loss: 100.0
+  max_drawdown: 250.0
+  min_edge: 0.008
+  max_spread: 0.12
+  error_cooldown_sec: 30
+  max_consecutive_errors: 5
+
+strategies:
+  # Buy Up+Down when asks sum < ~$1; sell both when bids sum > ~$1
+  binary_arb:
+    enabled: true
+    min_edge: 0.01
+    fee_buffer: 0.01
+    size: 25.0
+
+websocket:
+  ping_interval_sec: 10
+  reconnect_delay_sec: 3
+  custom_feature_enabled: true
+
+notify:
+  on_fill: true
+  on_risk_halt: true
+  on_kill: true
