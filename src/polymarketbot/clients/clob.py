@@ -289,4 +289,3 @@ def _to_dict(obj: Any) -> dict[str, Any]:
     if hasattr(obj, "__dict__"):
         return dict(obj.__dict__)
     return {"value": str(obj)}
-
