@@ -190,4 +190,3 @@ def resolve_path(path: str | Path) -> Path:
     if cwd.exists() or os.getenv("POLYMARKETBOT_FORCE_CWD"):
         return cwd
     return ROOT / p
-
