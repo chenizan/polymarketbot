@@ -37,3 +37,4 @@ def setup_logging(log_dir: str | Path = "logs", level: int = logging.INFO) -> lo
 
 def get_logger(name: str = "polymarketbot") -> logging.Logger:
     return logging.getLogger(name)
+
