@@ -121,3 +121,4 @@ class BinaryArbStrategy(Strategy):
                 neg_risk=state.market.neg_risk,
             ),
         ]
+
