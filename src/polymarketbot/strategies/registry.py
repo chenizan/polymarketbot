@@ -24,4 +24,3 @@ def build_strategies(
         else:
             raise ValueError(f"Unknown strategy: {name}")
     return strategies
-
