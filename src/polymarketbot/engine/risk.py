@@ -137,3 +137,4 @@ class RiskManager:
             adjusted = signal.model_copy(update={"size": min(size, remain)})
 
         return RiskDecision(True, "ok", adjusted)
+
