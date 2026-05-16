@@ -314,4 +314,3 @@ def cancel_all_cmd(ctx: typer.Context) -> None:
 
 if __name__ == "__main__":
     app()
-
