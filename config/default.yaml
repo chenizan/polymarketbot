@@ -60,3 +60,4 @@ notify:
   on_fill: true
   on_risk_halt: true
   on_kill: true
+
