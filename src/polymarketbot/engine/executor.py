@@ -214,4 +214,3 @@ class Executor:
         self.portfolio.apply_fill(fill)
         self.store.save_fill(fill)
         return fill
-
