@@ -371,4 +371,3 @@ def resolve_updown_assets(
             except Exception:  # noqa: BLE001
                 pass
     return list(defaults)
-
