@@ -173,4 +173,3 @@ class PortfolioSnapshot(BaseModel):
     open_markets: int = 0
     positions: dict[str, Position] = Field(default_factory=dict)
     updated_at: datetime = Field(default_factory=utcnow)
-

@@ -1,2 +1,1 @@
 """Notify package."""
-
